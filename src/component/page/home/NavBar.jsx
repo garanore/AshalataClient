@@ -1,6 +1,6 @@
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
 import React from "react";
-import "/src/Component/css/style.css";
+import "./style.css";
 
 const NavBar = () => {
   const handleToggleClick = () => {

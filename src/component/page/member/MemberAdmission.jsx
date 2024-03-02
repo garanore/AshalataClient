@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "../../datepicker/DatePicker";
 
 import axios from "axios";
-const API_URL = "http://localhost:4000/memberdmission";
+const API_URL = "https://ashalota.gandhipoka.com/memberdmission";
 
 const MemberAdmission = () => {
   const [memberData, setmemberData] = useState({
@@ -68,10 +68,10 @@ const MemberAdmission = () => {
     const fetchCenters = async () => {
       try {
         const responseBranch = await fetch(
-          "http://localhost:4000/branch-callback"
+          "https://ashalota.gandhipoka.com/branch-callback"
         );
         const responseCenter = await fetch(
-          "http://localhost:4000/center-callback"
+          "https://ashalota.gandhipoka.com/center-callback"
         );
 
         if (!responseBranch.ok || !responseCenter.ok) {

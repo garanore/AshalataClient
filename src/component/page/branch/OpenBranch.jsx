@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "http://localhost:4000/openbranch";
+const API_URL = "https://ashalota.gandhipoka.com/openbranch";
 const Managers = ["আব্দুল ছাত্তার", "সুমন সরকার", "আকলিমা বেগম "];
 function OpenBranch() {
   const [branchCount, setBranchCount] = useState(0);
@@ -77,7 +77,7 @@ function OpenBranch() {
       <div className="bg-light">
         <div className="p-2">
           <div className="border-bottom mb-5">
-            <h2 className="text-center mb-4 pt-3">শাঁখা খুলুন</h2>
+            <h2 className="text-center mb-4 pt-3">শাখা খুলুন</h2>
           </div>
         </div>
 
@@ -98,7 +98,7 @@ function OpenBranch() {
               </div>
               <div className="mb-3 col-md-3 col-3">
                 <label htmlFor="BranchName" className="form-label">
-                  শাঁখার নাম
+                  শাখার নাম
                 </label>
                 <input
                   id="BranchName"

@@ -10,7 +10,7 @@ function MemberListCenter() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/center-callback")
+      .get("https://ashalota.gandhipoka.com/center-callback")
       .then((response) => {
         setCenters(response.data);
       })
@@ -28,7 +28,7 @@ function MemberListCenter() {
     if (center) {
       axios
         .get(
-          `http://localhost:4000/member-callback?selectedCenter=${encodeURIComponent(
+          `https://ashalota.gandhipoka.com/member-callback?selectedCenter=${encodeURIComponent(
             center
           )}`
         )

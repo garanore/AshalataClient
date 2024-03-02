@@ -12,7 +12,7 @@ function WorkerDetails() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/branch-callback")
+      .get("https://ashalota.gandhipoka.com/branch-callback")
       .then((response) => {
         setBranches(response.data);
       })
@@ -31,7 +31,7 @@ function WorkerDetails() {
     if (branch) {
       axios
         .get(
-          `http://localhost:4000/worker-callback?selectedBranch=${encodeURIComponent(
+          `https://ashalota.gandhipoka.com/worker-callback?selectedBranch=${encodeURIComponent(
             branch
           )}`
         )

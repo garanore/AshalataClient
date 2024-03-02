@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-const API_URL = "http://localhost:4000/opencenter";
+const API_URL = "https://ashalota.gandhipoka.com/opencenter";
 
 function OpenCenter() {
   const [centerCount, setCenterCount] = useState(0);
@@ -21,7 +21,9 @@ function OpenCenter() {
   useEffect(() => {
     const fetchCenters = async () => {
       try {
-        const response = await fetch("http://localhost:4000/branch-callback");
+        const response = await fetch(
+          "https://ashalota.gandhipoka.com/branch-callback"
+        );
         const data = await response.json();
         console.log("Fetched branch:", data);
         setBranchs(data);
@@ -36,7 +38,9 @@ function OpenCenter() {
   useEffect(() => {
     const fetchCenters = async () => {
       try {
-        const response = await fetch("http://localhost:4000/worker-callback");
+        const response = await fetch(
+          "https://ashalota.gandhipoka.com/worker-callback"
+        );
         const data = await response.json();
         console.log("Fetched workers:", data); // Log the data
         setWorkers(data);

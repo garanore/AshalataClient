@@ -13,7 +13,7 @@ const Signup = () => {
   const [passwordMatchError, setPasswordMatchError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const API_URL = "http://localhost:4000/signup";
+  const API_URL = "https://ashalota.gandhipoka.com/signup";
 
   const handlePhoneNumberChange = (e) => {
     setPhoneNumber(e.target.value);

@@ -6,7 +6,7 @@ import NavBar from "./component/page/home/NavBar";
 
 import { Outlet } from "react-router-dom";
 import SideBar from "./component/page/home/SideBar";
-import "/src/component/css/style.css";
+import "/src/component/page/home/style.css";
 import "/src/component/css/Outlet.css";
 
 function App() {

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import DatePicker from "../../datepicker/DatePicker";
 
-const API_URL = "http://localhost:4000/workeradmission";
+const API_URL = "https://ashalota.gandhipoka.com/workeradmission";
 
 const WorkerAdmission = () => {
   const [WorkerCount, setWorkerCount] = useState(0);
@@ -42,10 +42,10 @@ const WorkerAdmission = () => {
     const fetchCenters = async () => {
       try {
         const responseBranch = await fetch(
-          "http://localhost:4000/branch-callback"
+          "https://ashalota.gandhipoka.com/branch-callback"
         );
         const responseCenter = await fetch(
-          "http://localhost:4000/center-callback"
+          "https://ashalota.gandhipoka.com/center-callback"
         );
 
         if (!responseBranch.ok || !responseCenter.ok) {

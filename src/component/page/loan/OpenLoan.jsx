@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 import axios from "axios"; // Import Axios
-const API_URL = "http://localhost:4000/openloan";
+const API_URL = "https://ashalota.gandhipoka.com/openloan";
 
 const memberData = [
   {

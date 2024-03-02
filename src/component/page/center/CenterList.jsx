@@ -10,7 +10,7 @@ function CenterList() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/branch-callback")
+      .get("https://ashalota.gandhipoka.com/branch-callback")
       .then((response) => {
         setBranches(response.data);
       })
@@ -29,7 +29,7 @@ function CenterList() {
     if (branch) {
       axios
         .get(
-          `http://localhost:4000/center-callback?selectedBranch=${encodeURIComponent(
+          `https://ashalota.gandhipoka.com/center-callback?selectedBranch=${encodeURIComponent(
             branch
           )}`
         )

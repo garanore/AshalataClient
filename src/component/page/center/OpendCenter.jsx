@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-const API_URL = "https://ashalota.gandhipoka.com/opencenter";
+const API_URL = "http://localhost:9000/opencenter";
 
 function OpenCenter() {
   const [centerCount, setCenterCount] = useState(0);
@@ -21,11 +21,9 @@ function OpenCenter() {
   useEffect(() => {
     const fetchCenters = async () => {
       try {
-        const response = await fetch(
-          "https://ashalota.gandhipoka.com/branch-callback"
-        );
+        const response = await fetch("http://localhost:9000/branch-callback");
         const data = await response.json();
-        console.log("Fetched branch:", data);
+
         setBranchs(data);
       } catch (error) {
         console.error("Error fetching branch options:", error.message);
@@ -38,11 +36,9 @@ function OpenCenter() {
   useEffect(() => {
     const fetchCenters = async () => {
       try {
-        const response = await fetch(
-          "https://ashalota.gandhipoka.com/worker-callback"
-        );
+        const response = await fetch("http://localhost:9000/worker-callback");
         const data = await response.json();
-        console.log("Fetched workers:", data); // Log the data
+
         setWorkers(data);
       } catch (error) {
         console.error("Error fetching worker options:", error.message);
@@ -82,13 +78,13 @@ function OpenCenter() {
         return;
       }
 
+      // eslint-disable-next-line no-unused-vars
       const response = await axios.post(API_URL, {
         centerID: formData.centerID, // Include centerID in the payload
         ...formData,
       });
 
       setSubmitMessage("Successfully submitted!");
-      console.log("Response from server:", response.data);
 
       setCenterCount(centerCount + 1);
       setCenterID(generateCenterID());
@@ -100,10 +96,6 @@ function OpenCenter() {
         centerBranch: "",
         centerdWorker: "",
       });
-
-      setTimeout(() => {
-        setSubmitMessage("");
-      }, 3000);
     } catch (error) {
       console.error("Error submitting form:", error.message);
       setSubmitMessage(`Error: ${error.message}`);

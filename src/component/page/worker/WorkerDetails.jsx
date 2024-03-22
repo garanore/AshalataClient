@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // Main Component
 function WorkerDetails() {
@@ -9,10 +10,11 @@ function WorkerDetails() {
   const [selectedWorker, setSelectedWorker] = useState(null);
   const [workers, setWorkers] = useState([]);
   const [branches, setBranches] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get("https://ashalota.gandhipoka.com/branch-callback")
+      .get("http://localhost:9000/branch-callback")
       .then((response) => {
         setBranches(response.data);
       })
@@ -31,7 +33,7 @@ function WorkerDetails() {
     if (branch) {
       axios
         .get(
-          `https://ashalota.gandhipoka.com/worker-callback?selectedBranch=${encodeURIComponent(
+          `http://localhost:9000/worker-callback?selectedBranch=${encodeURIComponent(
             branch
           )}`
         )
@@ -46,6 +48,10 @@ function WorkerDetails() {
 
   const handleWorkerClick = (worker) => {
     setSelectedWorker(worker);
+  };
+
+  const handleEdit = (worker) => {
+    navigate("/WorkerEdit", { state: { workerID: worker._id } });
   };
 
   return (
@@ -106,15 +112,8 @@ function WorkerDetails() {
                     </button>{" "}
                     <button
                       type="button"
-                      className="btn btn-danger btn-sm"
-                      onClick={() => console.log("Delete worker")}
-                    >
-                      Delete
-                    </button>{" "}
-                    <button
-                      type="button"
-                      className="btn btn-warning btn-sm"
-                      onClick={() => console.log("Edit worker")}
+                      className="ms-3 btn btn-primary btn-sm"
+                      onClick={() => handleEdit(worker)}
                     >
                       Edit
                     </button>

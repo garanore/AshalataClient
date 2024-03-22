@@ -1,52 +1,40 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-// Sample data (replace it with your actual data from the database)
-const branchData = [
-  {
-    id: "B0001",
-    name: "Branch A",
-    address: "123 Main St",
-    mobile: "1234567890",
-    manager: "Manager A",
-    totalCenter: 3,
-  },
-  {
-    id: "B0002",
-    name: "Branch B",
-    address: "456 Oak St",
-    mobile: "9876543210",
-    manager: "Manager B",
-    totalCenter: 2,
-  },
-  {
-    id: "B0003",
-    name: "Branch C",
-    address: "789 Elm St",
-    mobile: "5556667777",
-    manager: "Manager C",
-    totalCenter: 4,
-  },
-  {
-    id: "B0004",
-    name: "Branch C",
-    address: "789 Elm St",
-    mobile: "5556667777",
-    manager: "Manager D",
-    totalCenter: 10,
-  },
-];
-
-// Main Component
 function BranchList() {
+  const [branchData, setBranchData] = useState([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:9000/branch-callback"
+        );
+        setBranchData(response.data);
+      } catch (error) {
+        console.error("Error fetching branch data:", error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleEditClick = (branch) => {
+    navigate("/BranchEditModal", { state: { BranchID: branch._id } });
+  };
+
   return (
     <div>
       <div className="bg-light container-fluid">
         <div className="mt-2 ">
-          <h2 className="text-center  mb-4 pt-3">শাঁখার তালিকা </h2>
+          <h2 className="text-center mb-4 pt-3">শাঁখার তালিকা </h2>
         </div>
 
-        <div className=" mt-5 bg-light">
+        <div className="mt-5 bg-light">
           <table className="table table-bordered table-responsive">
             <thead>
               <tr>
@@ -61,20 +49,22 @@ function BranchList() {
             </thead>
             <tbody>
               {branchData.map((branch) => (
-                <tr key={branch.id}>
-                  <td>{branch.id}</td>
-                  <td>{branch.name}</td>
-                  <td>{branch.address}</td>
-                  <td>{branch.mobile}</td>
-                  <td>{branch.manager}</td>
-                  <td>{branch.totalCenter}</td>
+                <tr key={branch.BranchID}>
+                  <td>{branch.BranchID}</td>
+                  <td>{branch.BranchName}</td>
+                  <td>{branch.BranchAddress}</td>
+                  <td>{branch.BranchMobile}</td>
+                  <td>{branch.selectedManager}</td>
+                  <td>{branch.BranchMobile}</td>
+
                   <td>
-                    {/* Action Buttons (View, Edit, Delete) */}
-                    <button className="btn btn-info btn-sm me-2">View</button>
-                    <button className="btn btn-warning btn-sm me-2">
+                    <button
+                      type="button"
+                      className="ms-3 btn btn-primary btn-sm"
+                      onClick={() => handleEditClick(branch)}
+                    >
                       Edit
                     </button>
-                    <button className="btn btn-danger btn-sm">Delete</button>
                   </td>
                 </tr>
               ))}

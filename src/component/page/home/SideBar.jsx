@@ -16,7 +16,7 @@ const SideBar = () => {
                 <ul className="sidebar-nav">
                   <li className="sidebar-header">Admin Elements</li>
                   <li className="sidebar-item">
-                    <Link to="/DashBoard" className="sidebar-link">
+                    <Link to="/Home" className="sidebar-link">
                       <i className="fa-solid fa-list pe-2"></i>
                       ড্যাশবোর্ড
                     </Link>
@@ -46,12 +46,6 @@ const SideBar = () => {
                           সদস্য ভর্তি করুণ
                         </Link>
                       </li>
-
-                      <li className="sidebar-item">
-                        <a href="#" className="sidebar-link">
-                          সদস্য বিবরণ
-                        </a>
-                      </li>
                     </ul>
                   </li>
 
@@ -76,7 +70,7 @@ const SideBar = () => {
                       data-bs-parent="#sidebar"
                     >
                       <li className="sidebar-item">
-                        <Link to="WorkerAdd" className="sidebar-link">
+                        <Link to="WorkerAdmission" className="sidebar-link">
                           কর্মী যোগ করুণ
                         </Link>
                       </li>
@@ -114,17 +108,17 @@ const SideBar = () => {
                       data-bs-parent="#sidebar"
                     >
                       <li className="sidebar-item">
-                        <Link to="CenterAdd" className="sidebar-link">
+                        <Link to="OpenCenter" className="sidebar-link">
                           কেন্দ্র যোগ করুণ
                         </Link>
                       </li>
                       <li className="sidebar-item">
-                        <Link to="CenterDetails" className="sidebar-link">
+                        <Link to="CenterList" className="sidebar-link">
                           কেদ্রের তালিকা
                         </Link>
                       </li>
                       <li className="sidebar-item">
-                        <Link to="MemberDetails" className="sidebar-link">
+                        <Link to="MemberListCenter" className="sidebar-link">
                           কেদ্রের সদস্য তালিকা
                         </Link>
                       </li>
@@ -157,7 +151,7 @@ const SideBar = () => {
                       data-bs-parent="#sidebar"
                     >
                       <li className="sidebar-item">
-                        <Link to="BranchAdd" className="sidebar-link">
+                        <Link to="OpenBranch" className="sidebar-link">
                           শাঁখা যোগ করুণ
                         </Link>
                       </li>
@@ -166,14 +160,9 @@ const SideBar = () => {
                           শাঁখার তালিকা
                         </Link>
                       </li>
-                      {/* <li className="sidebar-item">
+                      <li className="sidebar-item">
                         <Link to="BranchMemberList" className="sidebar-link">
                           শাঁখার সদস্য তালিকা
-                        </Link>
-                      </li> */}
-                      <li className="sidebar-item">
-                        <Link to="OfficeCollection" className="sidebar-link">
-                          অফিস জমা
                         </Link>
                       </li>
                     </ul>
@@ -200,7 +189,7 @@ const SideBar = () => {
                       data-bs-parent="#sidebar"
                     >
                       <li className="sidebar-item">
-                        <Link to="LoanOpen" className="sidebar-link">
+                        <Link to="OpenLoan" className="sidebar-link">
                           ঋণ বিতরণ
                         </Link>
                       </li>
@@ -246,12 +235,12 @@ const SideBar = () => {
                       data-bs-parent="#sidebar"
                     >
                       <li className="sidebar-item">
-                        <Link to="SavingsOpen" className="sidebar-link">
+                        <Link to="OpenSavings" className="sidebar-link">
                           সঞ্চয় খুলুন
                         </Link>
                       </li>
                       <li className="sidebar-item">
-                        <Link to="SavingsList" className="sidebar-link">
+                        <Link to="SavingsDetails" className="sidebar-link">
                           সঞ্চয়ের বিবরণ
                         </Link>
                       </li>
@@ -273,6 +262,47 @@ const SideBar = () => {
                     </ul>
                   </li>
                   {/* সঞ্চয় শেষ  */}
+
+                  {/* অফিস শুরু  */}
+                  <li className="sidebar-item">
+                    <a
+                      href="#"
+                      className="sidebar-link collapsed"
+                      data-bs-target="#Office"
+                      data-bs-toggle="collapse"
+                      aria-expanded="false"
+                    >
+                      <i className="fa-solid fa-sliders pe-2"></i>
+                      অফিস
+                    </a>
+                    <ul
+                      id="Office"
+                      className="sidebar-dropdown list-unstyled collapse"
+                      data-bs-parent="#sidebar"
+                    >
+                      <li className="sidebar-item">
+                        <Link to="OfficeWorkerAdd" className="sidebar-link">
+                          অফিস কর্মী যোগ করুণ
+                        </Link>
+                      </li>
+                      <li className="sidebar-item">
+                        <Link to="OfficeWorkerDetails" className="sidebar-link">
+                          অফিস কর্মী বিবরণ
+                        </Link>
+                      </li>
+                      <li className="sidebar-item">
+                        <Link to="Sallary" className="sidebar-link">
+                          বেতন
+                        </Link>
+                      </li>
+                      <li className="sidebar-item">
+                        <Link to="OfficeCollection" className="sidebar-link">
+                          অফিস জমা
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+                  {/* অফিস শুরু  */}
 
                   {/* হিসাব শুরু */}
 
@@ -315,7 +345,7 @@ const SideBar = () => {
                     </ul>
                   </li>
 
-                  {/* হিসাব শুরু  */}
+                  {/* হিসাব শেষ  */}
 
                   <li className="sidebar-item">
                     <a
@@ -342,51 +372,6 @@ const SideBar = () => {
                         <Link to="Auth-register" className="sidebar-link">
                           Register
                         </Link>
-                      </li>
-                    </ul>
-                  </li>
-                  <li className="sidebar-header">Multi Level Menu</li>
-                  <li className="sidebar-item">
-                    <a
-                      href="#"
-                      className="sidebar-link collapsed"
-                      data-bs-target="#multi"
-                      data-bs-toggle="collapse"
-                      aria-expanded="false"
-                    >
-                      <i className="fa-solid fa-share-nodes pe-2"></i>
-                      Multi Dropdown
-                    </a>
-                    <ul
-                      id="multi"
-                      className="sidebar-dropdown list-unstyled collapse"
-                      data-bs-parent="#sidebar"
-                    >
-                      <li className="sidebar-item">
-                        <a
-                          href="#"
-                          className="sidebar-link collapsed"
-                          data-bs-target="#level-1"
-                          data-bs-toggle="collapse"
-                          aria-expanded="false"
-                        >
-                          Level 1
-                        </a>
-                        <ul
-                          id="level-1"
-                          className="sidebar-dropdown list-unstyled collapse"
-                        >
-                          <li className="sidebar-item">
-                            <a href="#" className="sidebar-link">
-                              Level 1.1
-                            </a>
-                          </li>
-                          <li className="sidebar-item">
-                            <a href="#" className="sidebar-link">
-                              Level 1.2
-                            </a>
-                          </li>
-                        </ul>
                       </li>
                     </ul>
                   </li>

@@ -1,20 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-import axios from "axios"; // Import Axios
-const API_URL = "https://ashalota.gandhipoka.com/openloan";
-
-const memberData = [
-  {
-    nid: 123456789,
-    memberName: "ছালমা খাতুন",
-    husbandName: "ঈমান আলী",
-    branchName: "এলেংগা ",
-    centerName: "ইছাপুর",
-    mobile: "9876543210",
-  },
-  // Add more members as needed
-];
+const API_URL = "http://localhost:9000/openloan";
 
 const loanTypeTranslations = {
   normal: "সাধারণ ঋণ",
@@ -28,108 +16,165 @@ const loanTypeTranslations = {
 
 function OpenLoan() {
   const [loanCount, setLoanCount] = useState(0);
-  const [loanID, setloanID] = useState("");
-
-  const [nid, setNid] = useState("");
+  const [loanID, setLoanID] = useState("");
+  const [memberID, setMemberID] = useState("");
+  const [memberData, setMemberData] = useState([]);
   const [selectedMember, setSelectedMember] = useState(null);
   const [loanType, setLoanType] = useState("");
-  const [amount, setAmount] = useState("");
-  const [total, setTotal] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
+  const [OLamount, setAmount] = useState("0");
+  const [OLtotal, setTotal] = useState("0");
+
   const [submitMessage, setSubmitMessage] = useState("");
 
   useEffect(() => {
-    const fetchedMember = memberData.find((member) => member.nid === +nid);
-    setSelectedMember(fetchedMember);
-  }, [nid]);
+    const fetchMemberData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:9000/member-callback"
+        );
+
+        setMemberData(response.data.members);
+      } catch (error) {
+        console.error("Error fetching member data:", error.message);
+      }
+    };
+
+    fetchMemberData();
+  }, []);
 
   useEffect(() => {
     if (loanCount !== undefined) {
-      setloanID(generateLoanID(loanCount));
+      setLoanID(generateLoanID(loanCount));
     }
   }, [loanCount]);
+
   const generateLoanID = (count) => {
     const paddedCount =
       count !== undefined ? count.toString().padStart(4, "0") : "";
     return `L${paddedCount}`;
   };
 
+  useEffect(() => {
+    // Check if memberData is available and not empty
+    if (!memberData || memberData.length === 0) {
+      return;
+    }
+
+    // Now, memberData should be available
+    const fetchedMember = memberData.find(
+      (member) => member.memberID === memberID
+    );
+
+    // Check if the member is found
+    if (fetchedMember) {
+      setSelectedMember(fetchedMember);
+      setLoanType(fetchedMember.loanType || "");
+      setAmount(fetchedMember.amount || "0");
+      setTotal(fetchedMember.total || "0");
+    } else {
+      setSelectedMember(null);
+      setLoanType("");
+      setAmount("0");
+      setTotal("0");
+    }
+  }, [memberData, memberID]);
+
+  const handleMemberIDChange = async (e) => {
+    const enteredMemberID = e.target.value;
+
+    setMemberID(enteredMemberID);
+
+    try {
+      // Fetch member data
+      const response = await axios.get("http://localhost:9000/member-callback");
+
+      // Check if the response data is an array and not empty
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        // Find the member in the fetched data
+        const fetchedMember = response.data.find(
+          (member) => member.memberID === enteredMemberID
+        );
+
+        // Update the state based on the fetched member
+        if (fetchedMember) {
+          setSelectedMember(fetchedMember);
+          setLoanType(fetchedMember.loanType || "");
+          setAmount(fetchedMember.amount || "0");
+          setTotal(fetchedMember.total || "0");
+        } else {
+          setSelectedMember(null);
+          setLoanType("");
+          setAmount("0");
+          setTotal("0");
+        }
+      } else {
+        // Reset the selected member and other fields
+        setSelectedMember(null);
+        setLoanType("");
+        setAmount("0");
+        setTotal("0");
+      }
+    } catch (error) {
+      console.error("Error fetching member data:", error.message);
+      // Handle the error as needed
+    }
+  };
+
   const handleLoanTypeChange = (e) => {
     setLoanType(e.target.value);
     setAmount("");
     setTotal("");
-    setMobileNumber("");
   };
 
   const handleAmountChange = (e) => {
     const enteredAmount = +e.target.value;
-    let interestRate;
-    switch (loanType) {
-      case "normal":
-        interestRate = 0.15;
-        break;
-      case "tubewell":
-        interestRate = 0.15;
-        break;
-      case "high":
-        interestRate = 0.15;
-        break;
-      case "farmer":
-        interestRate = 0.15;
-        break;
-      case "sme":
-        interestRate = 0.15;
-        break;
-      case "emergency":
-        interestRate = 0.15;
-        break;
-      case "disaster":
-        interestRate = 0.15;
-        break;
-      case "daily":
-        interestRate = 0.15;
-        break;
-      default:
-        interestRate = 0;
-    }
+    let interestRate = 0.15;
 
-    const calculatedTotal = enteredAmount + enteredAmount * interestRate;
-    setAmount(enteredAmount);
-    setTotal(calculatedTotal.toFixed(2));
+    if (!isNaN(enteredAmount)) {
+      const calculatedTotal = enteredAmount + enteredAmount * interestRate;
+      setAmount(enteredAmount);
+      setTotal(calculatedTotal.toFixed(2));
+      setTotal(Math.ceil(calculatedTotal));
+    }
   };
 
   const handleSubmit = async () => {
     try {
-      // Make a POST request to the backend endpoint
       const response = await axios.post(API_URL, {
-        nid,
+        memberID,
         loanID,
+        OLmobile: selectedMember.OLmobile,
         selectedMember,
         loanType: loanTypeTranslations[loanType],
-        amount,
-        total,
-        mobileNumber,
+        OLamount,
+        OLtotal,
       });
 
-      // Set the success message
-      setSubmitMessage("Successfully submitted!");
-      console.log("Response from server:", response.data);
-      setLoanCount(loanCount + 1);
-      setloanID(generateLoanID());
-      // Clear the form
-      setNid("");
-      setloanID("");
-      setSelectedMember(null);
-      setLoanType("");
-      setAmount("");
-      setTotal("");
-      setMobileNumber("");
+      if (response.status === 200 || response.status === 201) {
+        setSubmitMessage("Successfully submitted!");
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+        setLoanCount(loanCount + 1);
+        setLoanID(generateLoanID());
+
+        setMemberID("");
+        setLoanID("");
+        setSelectedMember(null);
+        setLoanType("");
+        setAmount("");
+        setTotal("");
+      } else {
+        // Handle unexpected response status
+        console.error("Unexpected response status:", response.status);
+        setSubmitMessage(
+          `Error: Unexpected response status ${response.status}`
+        );
+      }
     } catch (error) {
       console.error("Error submitting form:", error.message);
+      // Log the detailed error response from the server
+      if (error.response) {
+        console.error("Server response data:", error.response.data);
+      }
       setSubmitMessage(`Error: ${error.message}`);
     }
   };
@@ -145,16 +190,16 @@ function OpenLoan() {
           </div>
           <div className="mb-3 row">
             <div className="col-3">
-              <label htmlFor="nid" className="form-label">
-                NID:
+              <label htmlFor="memberID" className="form-label">
+                Member ID:
               </label>
               <input
-                type="number"
-                id="nid"
+                type="text"
+                id="memberID"
                 className="form-control"
-                value={nid}
-                onChange={(e) => setNid(e.target.value)}
-                placeholder="Enter NID"
+                value={memberID}
+                onChange={handleMemberIDChange} // Handle Member ID change
+                placeholder="Enter Member ID"
               ></input>
             </div>
             <div className="mb-3 col-3">
@@ -186,14 +231,14 @@ function OpenLoan() {
                 </div>
 
                 <div className="col-2">
-                  <label htmlFor="OLfathername" className="form-label">
+                  <label htmlFor="fathername" className="form-label">
                     পিতা/স্বামী
                   </label>
                   <input
                     type="text"
                     id="fathername"
                     className="form-control"
-                    value={selectedMember.husbandName}
+                    value={selectedMember.MfhName}
                     readOnly
                   />
                 </div>
@@ -206,7 +251,7 @@ function OpenLoan() {
                     type="text"
                     id="OLbranch"
                     className="form-control"
-                    value={selectedMember.branchName}
+                    value={selectedMember.BranchMember}
                     readOnly
                   />
                 </div>
@@ -219,7 +264,7 @@ function OpenLoan() {
                     type="text"
                     id="OLcenter"
                     className="form-control"
-                    value={selectedMember.centerName}
+                    value={selectedMember.CenterMember}
                     readOnly
                   />
                 </div>
@@ -232,14 +277,8 @@ function OpenLoan() {
                     type="number"
                     id="OLmobile"
                     className="form-control"
-                    value={selectedMember.mobile}
-                    onChange={(e) => {
-                      const updatedMember = {
-                        ...selectedMember,
-                        mobile: e.target.value,
-                      };
-                      setSelectedMember(updatedMember);
-                    }}
+                    value={selectedMember.MemberMobile}
+                    readOnly
                   ></input>
                 </div>
               </div>
@@ -280,7 +319,7 @@ function OpenLoan() {
                   type="number"
                   id="OLamount"
                   className="form-control"
-                  value={amount}
+                  value={OLamount}
                   onChange={handleAmountChange}
                   placeholder="Enter Amount"
                 />
@@ -294,7 +333,7 @@ function OpenLoan() {
                   type="text"
                   id="OLtotal"
                   className="form-control"
-                  value={total}
+                  value={OLtotal}
                   readOnly
                 />
               </div>

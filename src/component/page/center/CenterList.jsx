@@ -1,16 +1,18 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function CenterList() {
   const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedCenter, setSelectedCenter] = useState(null);
   const [centers, setCenters] = useState([]);
   const [branches, setBranches] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get("https://ashalota.gandhipoka.com/branch-callback")
+      .get("http://localhost:9000/branch-callback")
       .then((response) => {
         setBranches(response.data);
       })
@@ -29,7 +31,7 @@ function CenterList() {
     if (branch) {
       axios
         .get(
-          `https://ashalota.gandhipoka.com/center-callback?selectedBranch=${encodeURIComponent(
+          `http://localhost:9000/center-callback?selectedBranch=${encodeURIComponent(
             branch
           )}`
         )
@@ -46,7 +48,9 @@ function CenterList() {
   const handleCenterClick = (center) => {
     setSelectedCenter(center);
   };
-
+  const handleEditClick = (center) => {
+    navigate("/CenterEdit", { state: { centerID: center._id } });
+  };
   return (
     <div className="bg-light container-fluid">
       <div className="row mb-5">
@@ -109,15 +113,8 @@ function CenterList() {
                     </button>{" "}
                     <button
                       type="button"
-                      className="btn btn-danger btn-sm"
-                      onClick={() => console.log("Delete center")}
-                    >
-                      Delete
-                    </button>{" "}
-                    <button
-                      type="button"
-                      className="btn btn-warning btn-sm"
-                      onClick={() => console.log("Edit center")}
+                      className="ms-3 btn btn-primary btn-sm"
+                      onClick={() => handleEditClick(center)}
                     >
                       Edit
                     </button>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const API_URL = "https://ashalota.gandhipoka.com/openbranch";
+const API_URL = "http://localhost:9000/openbranch";
 const Managers = ["আব্দুল ছাত্তার", "সুমন সরকার", "আকলিমা বেগম "];
 function OpenBranch() {
   const [branchCount, setBranchCount] = useState(0);
@@ -44,13 +44,13 @@ function OpenBranch() {
         return;
       }
 
+      // eslint-disable-next-line no-unused-vars
       const response = await axios.post(API_URL, {
         BranchID: branchID,
         ...branchData,
       });
 
       setSubmitMessage("Successfully submitted!");
-      console.log("Response from server:", response.data);
 
       // Reset form values after submission
       setBranchCount(branchCount + 1);

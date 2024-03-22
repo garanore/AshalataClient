@@ -1,16 +1,20 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+// import { convertLength } from "@mui/material/styles/cssUtils";
 
 function MemberListCenter() {
   const [selectedCenter, setSelectedCenter] = useState("");
   const [selectedMember, setSelectedMember] = useState(null);
   const [members, setMembers] = useState({});
   const [centers, setCenters] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get("https://ashalota.gandhipoka.com/center-callback")
+      .get("http://localhost:9000/center-callback")
       .then((response) => {
         setCenters(response.data);
       })
@@ -28,12 +32,11 @@ function MemberListCenter() {
     if (center) {
       axios
         .get(
-          `https://ashalota.gandhipoka.com/member-callback?selectedCenter=${encodeURIComponent(
+          `http://localhost:9000/member-callback?selectedCenter=${encodeURIComponent(
             center
           )}`
         )
         .then((response) => {
-          console.log("Received member data:", response.data);
           setMembers({ ...members, [center]: response.data });
         })
         .catch((error) => {
@@ -44,6 +47,9 @@ function MemberListCenter() {
 
   const handleMemberClick = (member) => {
     setSelectedMember(member);
+  };
+  const handleEdit = (member) => {
+    navigate("/MemberEdit", { state: { memberID: member._id } });
   };
 
   return (
@@ -104,22 +110,16 @@ function MemberListCenter() {
                     <td>
                       <button
                         type="button"
-                        className="btn btn-primary btn-sm"
+                        className=" btn btn-primary btn-sm"
                         onClick={() => handleMemberClick(member)}
                       >
                         View
-                      </button>{" "}
+                      </button>
+
                       <button
                         type="button"
-                        className="btn btn-danger btn-sm"
-                        onClick={() => console.log("Delete member")}
-                      >
-                        Delete
-                      </button>{" "}
-                      <button
-                        type="button"
-                        className="btn btn-warning btn-sm"
-                        onClick={() => console.log("Edit member")}
+                        className="ms-3 btn btn-primary btn-sm"
+                        onClick={() => handleEdit(member)}
                       >
                         Edit
                       </button>
@@ -132,7 +132,7 @@ function MemberListCenter() {
 
         {/* Selected Member Details */}
         {selectedMember && (
-          <div>
+          <form>
             <div className="mb-5 ">
               <h2 className="text-center mb-4 pt-4 ">নির্বাচিত সদস্যর বিবরণ</h2>
             </div>
@@ -204,6 +204,7 @@ function MemberListCenter() {
                   </div>
                   <div className="col-md-6">
                     <input
+                      type="text"
                       className="form-control"
                       value={selectedMember.NominiName}
                       readOnly
@@ -319,7 +320,7 @@ function MemberListCenter() {
                 </div>
               </div>
             </div>
-          </div>
+          </form>
         )}
       </div>
     </div>

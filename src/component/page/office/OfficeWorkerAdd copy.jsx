@@ -1,117 +1,109 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect, useRef } from "react";
 import DatePicker from "../../datepicker/DatePicker";
-import axios from "axios";
-const API_URL = "http://localhost:9000/workeradmission";
 
-const WorkerAdmission = () => {
-  const [WorkerCount, setWorkerCount] = useState(0);
-  const [workerID, setWorkerID] = useState("");
-  const [centers, setCenters] = useState([]);
-  const [branches, setBranchs] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState("");
-  const [WorkerData, setWorkerData] = useState({
-    WorkerName: "",
-    WorkerParent: "",
-    WdateOfBirth: "",
-    WorkerJob: "",
-    WorkerHome: "",
-    WorkerUnion: "",
-    WorkerPost: "",
-    WorkerSubDic: "",
-    WorkerDic: "",
-    WorkerMarital: "",
-    WorkerStudy: "",
-    WorkerNID: "",
-    WorkerMobile: "",
-    WorkerMail: "",
-    Workerimage: null,
-    WorkerCenterAdd: "",
-    WorkerBranchAdd: "",
+const API_URL = "http://localhost:9000/OfficeWorkerAdd";
+
+const OfficeWorkerAdd = () => {
+  const [OfficeWorkerCount, setOfficeWorkerCount] = useState(0);
+  const [officeworkerID, setofficeworkerID] = useState("");
+  const [centeres, setCenters] = useState([]);
+  const [branchs, setBranchs] = useState([]);
+  const [OfficeWorkerData, setOfficeWorkerData] = useState({
+    officeWorkerName: "",
+    OfficeWorkerParent: "",
+    OfficeWorkerJob: "",
+    officeWorkerHome: "",
+    OfficeWorkerUnion: "",
+    OfficeWdateOfBirth: "",
+    officeWorkerPost: "",
+    OfficeWorkerSubDic: "",
+    OfficeWorkerDic: "",
+    OfficeWorkerMarital: "",
+    OfficeWorkerStudy: "",
+    OfficeWorkerNID: "",
+    OfficeWorkerMobile: "",
+    OfficeWorkerMail: "",
+
+    OfficeWorkerCenter: "",
+    OfficeWorkerBranch: "",
+    Designation: "",
     agreementChecked: false,
   });
   const formRef = useRef(null);
   const handleDateChange = (date) => {
-    setWorkerData({
-      ...WorkerData,
-      WdateOfBirth: date,
+    setOfficeWorkerData({
+      ...OfficeWorkerData,
+      OfficeWdateOfBirth: date,
     });
   };
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:9000/branch-callback")
-      .then((response) => {
-        setBranchs(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching branch data:", error);
-      });
+    const fetchCenters = async () => {
+      try {
+        const responseBranch = await fetch(
+          "http://localhost:9000/branch-callback"
+        );
+        const responseCenter = await fetch(
+          "http://localhost:9000/center-callback"
+        );
+
+        if (!responseBranch.ok || !responseCenter.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const dataBranch = await responseBranch.json();
+        const dataCenter = await responseCenter.json();
+
+        setBranchs(dataBranch);
+        setCenters(dataCenter);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    };
+
+    fetchCenters();
   }, []);
 
-  const handleBranchChange = (e) => {
-    const branch = e.target.value;
-    const { name, value } = e.target;
-
-    setSelectedBranch(branch);
-
-    if (branch) {
-      axios
-        .get(
-          `http://localhost:9000/center-callback?selectedBranch=${encodeURIComponent(
-            branch
-          )}`
-        )
-        .then((response) => {
-          setCenters(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching worker data:", error);
-        });
-    }
-    if (name === "WorkerBranchAdd") {
-      setSelectedBranch(value);
-      setWorkerData((prevData) => ({
-        ...prevData,
-        WorkerBranchAdd: value,
-      }));
-    }
-  };
-
   useEffect(() => {
-    if (WorkerCount !== undefined) {
-      setWorkerID(generateWorkerID(WorkerCount));
+    if (OfficeWorkerCount !== undefined) {
+      setofficeworkerID(generateOfficeWorkerID(OfficeWorkerCount));
     }
-  }, [WorkerCount]);
-  const generateWorkerID = (count) => {
+  }, [OfficeWorkerCount]);
+  const generateOfficeWorkerID = (count) => {
     const paddedCount =
       count !== undefined ? count.toString().padStart(4, "0") : "";
-    return `W${paddedCount}`;
+    return `OW${paddedCount}`;
   };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const numericValue = name === "WorkerNID" ? parseInt(value, 10) : value;
-    setWorkerData((prevData) => ({
+    setOfficeWorkerData((prevData) => ({
       ...prevData,
       [name]: type === "checkbox" ? checked : numericValue,
       [name]: type === "checkbox" ? checked : formattedDate,
     }));
 
     const formattedDate =
-      name === "WdateOfBirth" ? (value ? value.toISOString() : null) : value;
+      name === "OfficeWdateOfBirth"
+        ? value
+          ? value.toISOString()
+          : null
+        : value;
   };
   // Total Family Member End
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Make a POST request to the server with WorkerData
       const response = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(WorkerData),
+        body: JSON.stringify(OfficeWorkerData),
       });
 
       // eslint-disable-next-line no-unused-vars
@@ -119,27 +111,28 @@ const WorkerAdmission = () => {
 
       // Handle success
       setSuccessMessage("Successfully added worker data!");
-      setWorkerCount(WorkerCount + 1);
-      setWorkerID(generateWorkerID());
-      setWorkerData({
-        workerID: "",
-        WorkerName: "",
-        WorkerParent: "",
-        WdateOfBirth: "",
-        WorkerJob: "",
-        WorkerHome: "",
-        WorkerUnion: "",
-        WorkerPost: "",
-        WorkerSubDic: "",
-        WorkerDic: "",
-        WorkerMarital: "",
-        WorkerStudy: "",
-        WorkerNID: "",
-        WorkerMobile: "",
-        WorkerMail: "",
-        Workerimage: null,
-        WorkerCenterAdd: "",
-        WorkerBranchAdd: "",
+      setOfficeWorkerCount(OfficeWorkerCount + 1);
+      setofficeworkerID(generateOfficeWorkerID());
+      setOfficeWorkerData({
+        officeworkerID: "",
+        officeWorkerName: "",
+        OfficeWorkerParent: "",
+        OfficeWorkerJob: "",
+        officeWorkerHome: "",
+        OfficeWorkerUnion: "",
+        OfficeWdateOfBirth: "",
+        officeWorkerPost: "",
+        OfficeWorkerSubDic: "",
+        OfficeWorkerDic: "",
+        OfficeWorkerMarital: "",
+        OfficeWorkerStudy: "",
+        OfficeWorkerNID: "",
+        OfficeWorkerMobile: "",
+        OfficeWorkerMail: "",
+
+        OfficeWorkerCenter: "",
+        OfficeWorkerBranch: "",
+        Designation: "",
         agreementChecked: false,
       });
       setTimeout(() => {
@@ -147,7 +140,7 @@ const WorkerAdmission = () => {
       }, 3000);
       formRef.current.reset();
     } catch (error) {
-      console.error("Error submitting WorkerAdmission data:", error.message);
+      console.error("Error submitting OfficeWorker data:", error.message);
       // Handle error appropriately
     }
   };
@@ -155,164 +148,164 @@ const WorkerAdmission = () => {
     <div>
       <div className="  mt-2 bg-light">
         <div className="mb-5 ">
-          <h2 className="text-center mb-4 pt-4 ">কর্মী ভর্তি ফর্ম </h2>
+          <h2 className="text-center mb-4 pt-4 ">অফিস কর্মী ভর্তি ফর্ম </h2>
         </div>
 
         <form className=" bg-light " onSubmit={handleSubmit} ref={formRef}>
           {/* <!-- Full Name --> */}
           <div className="row g-4 p-2">
             <div className="mb-3 col-3">
-              <label htmlFor="workerID" className="form-label">
-                Worker ID:
+              <label htmlFor="officeworkerID" className="form-label">
+                ID:
               </label>
               <input
-                id="workerID"
+                id="officeworkerID"
                 className="form-control"
                 type="text"
-                value={workerID}
+                value={officeworkerID}
                 disabled
               />
             </div>
 
             <div className="col-md-4">
-              <label htmlFor="WorkerName" className="form-label">
+              <label htmlFor="officeWorkerName" className="form-label">
                 নাম
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="WorkerName"
+                id="officeWorkerName"
                 required
                 onChange={handleChange}
-                name="WorkerName"
-                value={WorkerData.WorkerName}
+                name="officeWorkerName"
+                value={OfficeWorkerData.officeWorkerName}
               ></input>
             </div>
 
             {/* সদস্য তথ্য শুরু */}
 
             <div className="col-md-4">
-              <label htmlFor="WorkerParent" className="form-label">
+              <label htmlFor="OfficeWorkerParent" className="form-label">
                 পিতা/স্বামীর নাম
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="WorkerParent"
+                id="OfficeWorkerParent"
                 required
                 onChange={handleChange}
-                name="WorkerParent"
-                value={WorkerData.WorkerParent}
+                name="OfficeWorkerParent"
+                value={OfficeWorkerData.OfficeWorkerParent}
               ></input>
             </div>
 
             <div className="col-4">
               <div className="col-4">
                 <DatePicker
-                  selectedDate={WorkerData.WdateOfBirth}
+                  selectedDate={OfficeWorkerData.OfficeWdateOfBirth}
                   onDateChange={handleDateChange}
                 />
               </div>
             </div>
             <div className="col-md-3">
-              <label htmlFor="WorkerJob" className="form-label">
+              <label htmlFor="OfficeWorkerJob" className="form-label">
                 পেশা
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="WorkerJob"
+                id="OfficeWorkerJob"
                 required
                 onChange={handleChange}
-                name="WorkerJob"
-                value={WorkerData.WorkerJob}
+                name="OfficeWorkerJob"
+                value={OfficeWorkerData.OfficeWorkerJob}
               ></input>
             </div>
 
             <div className="col-md-6">
-              <label htmlFor="WorkerHome" className="form-label">
+              <label htmlFor="officeWorkerHome" className="form-label">
                 গ্রাম/পাড়া
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="WorkerHome"
+                id="officeWorkerHome"
                 required
                 onChange={handleChange}
-                name="WorkerHome"
-                value={WorkerData.WorkerHome}
+                name="officeWorkerHome"
+                value={OfficeWorkerData.officeWorkerHome}
               ></input>
             </div>
 
             <div className="col-md-3">
-              <label htmlFor="WorkerUnion" className="form-label">
+              <label htmlFor="OfficeWorkerUnion" className="form-label">
                 ইউনিয়ন
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="WorkerUnion"
+                id="OfficeWorkerUnion"
                 required
                 onChange={handleChange}
-                name="WorkerUnion"
-                value={WorkerData.WorkerUnion}
+                name="OfficeWorkerUnion"
+                value={OfficeWorkerData.OfficeWorkerUnion}
               ></input>
             </div>
 
             <div className="col-md-3">
-              <label htmlFor="WorkerPost" className="form-label">
+              <label htmlFor="officeWorkerPost" className="form-label">
                 ডাকঘর
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="WorkerPost"
+                id="officeWorkerPost"
                 required
                 onChange={handleChange}
-                name="WorkerPost"
-                value={WorkerData.WorkerPost}
+                name="officeWorkerPost"
+                value={OfficeWorkerData.officeWorkerPost}
               ></input>
             </div>
 
             <div className="col-md-3">
-              <label htmlFor="WorkerSubDic" className="form-label">
+              <label htmlFor="OfficeWorkerSubDic" className="form-label">
                 থানা
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="WorkerSubDic"
+                id="OfficeWorkerSubDic"
                 required
                 onChange={handleChange}
-                name="WorkerSubDic"
-                value={WorkerData.WorkerSubDic}
+                name="OfficeWorkerSubDic"
+                value={OfficeWorkerData.OfficeWorkerSubDic}
               ></input>
             </div>
 
             <div className="col-md-3">
-              <label htmlFor="WorkerDic" className="form-label">
+              <label htmlFor="OfficeWorkerDic" className="form-label">
                 জেলা
               </label>
               <input
                 type="text"
                 className="form-control"
-                id="WorkerDic"
+                id="OfficeWorkerDic"
                 required
                 onChange={handleChange}
-                name="WorkerDic"
-                value={WorkerData.WorkerDic}
+                name="OfficeWorkerDic"
+                value={OfficeWorkerData.OfficeWorkerDic}
               ></input>
             </div>
 
             <div className="col-md-3">
-              <label htmlFor="WorkerMarital" className="form-label">
+              <label htmlFor="OfficeWorkerMarital" className="form-label">
                 বৈবাহিক অবস্থা
               </label>
               <select
-                id="WorkerMarital"
-                name="WorkerMarital"
+                id="OfficeWorkerMarital"
+                name="OfficeWorkerMarital"
                 className="form-select"
-                value={WorkerData.WorkerMarital}
+                value={OfficeWorkerData.OfficeWorkerMarital}
                 onChange={handleChange}
               >
                 <option value="">Choose...</option>
@@ -325,14 +318,14 @@ const WorkerAdmission = () => {
             </div>
 
             <div className="col-md-3">
-              <label htmlFor="WorkerStudy" className="form-label">
+              <label htmlFor="OfficeWorkerStudy" className="form-label">
                 শিক্ষাগত যোগ্যতা
               </label>
               <select
-                id="WorkerStudy"
-                name="WorkerStudy"
+                id="OfficeWorkerStudy"
+                name="OfficeWorkerStudy"
                 className="form-select"
-                value={WorkerData.WorkerStudy}
+                value={OfficeWorkerData.OfficeWorkerStudy}
                 onChange={handleChange}
               >
                 <option value="">Choose...</option>
@@ -351,7 +344,10 @@ const WorkerAdmission = () => {
                   <div className="col-4">
                     <div className="row g-3 align-items-center ">
                       <div className="col-auto">
-                        <label htmlFor="WorkerNID" className="col-form-label">
+                        <label
+                          htmlFor="OfficeWorkerNID"
+                          className="col-form-label"
+                        >
                           NID নাম্বার{" "}
                         </label>
                       </div>
@@ -359,11 +355,11 @@ const WorkerAdmission = () => {
                         <input
                           type="number"
                           className="form-control"
-                          id="WorkerNID"
+                          id="OfficeWorkerNID"
                           required
                           onChange={handleChange}
-                          name="WorkerNID"
-                          value={WorkerData.WorkerNID}
+                          name="OfficeWorkerNID"
+                          value={OfficeWorkerData.OfficeWorkerNID}
                         ></input>
                       </div>
                     </div>
@@ -373,7 +369,7 @@ const WorkerAdmission = () => {
                     <div className="row g-3 align-items-center ">
                       <div className="col-auto">
                         <label
-                          htmlFor="WorkerMobile"
+                          htmlFor="OfficeWorkerMobile"
                           className="col-form-label"
                         >
                           মোবাইল নাম্বার{" "}
@@ -383,11 +379,11 @@ const WorkerAdmission = () => {
                         <input
                           type="number"
                           className="form-control"
-                          id="WorkerMobile"
+                          id="OfficeWorkerMobile"
                           required
                           onChange={handleChange}
-                          name="WorkerMobile"
-                          value={WorkerData.WorkerMobile}
+                          name="OfficeWorkerMobile"
+                          value={OfficeWorkerData.OfficeWorkerMobile}
                         ></input>
                       </div>
                     </div>
@@ -395,7 +391,10 @@ const WorkerAdmission = () => {
                   <div className="col-4">
                     <div className="row g-3 align-items-center ">
                       <div className="col-auto">
-                        <label htmlFor="WorkerMail" className="col-form-label">
+                        <label
+                          htmlFor="OfficeWorkerMail"
+                          className="col-form-label"
+                        >
                           মেইল{" "}
                         </label>
                       </div>
@@ -403,11 +402,11 @@ const WorkerAdmission = () => {
                         <input
                           type="email"
                           className="form-control"
-                          id="WorkerMail"
+                          id="OfficeWorkerMail"
                           required
                           onChange={handleChange}
-                          name="WorkerMail"
-                          value={WorkerData.WorkerMail}
+                          name="OfficeWorkerMail"
+                          value={OfficeWorkerData.OfficeWorkerMail}
                         ></input>
                       </div>
                     </div>
@@ -415,47 +414,64 @@ const WorkerAdmission = () => {
                 </div>
               </div>
             </div>
-            <div className="col-md-6">
-              <label htmlFor="WorkerBranchAdd" className="form-label">
+            <div className="col-md-4">
+              <label htmlFor="OfficeWorkerBranch" className="form-label">
                 শাঁখা নির্বাচন করুণ
               </label>
               <select
-                id="WorkerBranchAdd"
+                id="OfficeWorkerBranch"
                 className="form-select"
-                value={selectedBranch.WorkerBranchAdd}
-                onChange={handleBranchChange}
-                name="WorkerBranchAdd"
+                value={OfficeWorkerData.OfficeWorkerBranch}
+                onChange={handleChange}
+                name="OfficeWorkerBranch"
               >
                 <option value="">Choose...</option>
-                {Array.isArray(branches) &&
-                  branches.length > 0 &&
-                  branches.map((branch) => (
-                    <option key={branch._id} value={branch.BranchName}>
-                      {branch.BranchName}
-                    </option>
-                  ))}
+                {branchs.map((branch) => (
+                  <option key={branch._id} value={branch.BranchName}>
+                    {branch.BranchName}
+                  </option>
+                ))}
               </select>
             </div>
-            <div className="col-md-3">
-              <label htmlFor="WorkerCenterAdd" className="form-label">
+            <div className="col-md-4">
+              <label htmlFor="OfficeWorkerCenter" className="form-label">
                 কেন্দ্র নির্বাচন করুণ
               </label>
               <select
-                id="workerCenterAdd"
-                name="WorkerCenterAdd"
+                id="OfficeWorkerCenter"
+                name="OfficeWorkerCenter"
                 className="form-select"
-                value={WorkerData.WorkerCenterAdd}
+                value={OfficeWorkerData.OfficeWorkerCenter}
                 onChange={handleChange}
               >
                 <option value="">Choose...</option>
-                {centers.map((center) => (
-                  <option key={center.centerID} value={center.CenterName}>
+                {centeres.map((center) => (
+                  <option key={center._id} value={center.CenterName}>
                     {center.CenterName}
                   </option>
                 ))}
               </select>
             </div>
-
+            <div className="col-md-4">
+              <label htmlFor="Designation" className="form-label">
+                পদবি
+              </label>
+              <select
+                id="Designation"
+                name="Designation"
+                className="form-select"
+                value={OfficeWorkerData.Designation}
+                onChange={handleChange}
+              >
+                <option value="">Choose...</option>
+                <option>স্বাক্ষর জ্ঞান সম্পন্ন</option>
+                <option>প্রাথমিক</option>
+                <option>মাধ্যমিক</option>
+                <option>উচ্চমাধ্যমিক</option>
+                <option>স্নাতক</option>
+                <option>স্নাতকোত্তর</option>
+              </select>
+            </div>
             <div className="col-12">
               <div className="form-check">
                 <input
@@ -463,7 +479,7 @@ const WorkerAdmission = () => {
                   type="checkbox"
                   id="gridCheck"
                   name="agreementChecked"
-                  checked={WorkerData.agreementChecked}
+                  checked={OfficeWorkerData.agreementChecked}
                   onChange={handleChange}
                 ></input>
                 <label className="form-check-label" htmlFor="gridCheck">
@@ -489,4 +505,4 @@ const WorkerAdmission = () => {
   );
 };
 
-export default WorkerAdmission;
+export default OfficeWorkerAdd;

@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
 import DatePicker from "../../datepicker/DatePicker";
 
 import axios from "axios";
-const API_URL = "https://ashalota.gandhipoka.com/memberdmission";
+const API_URL = "http://localhost:9000/memberdmission";
 
 const MemberAdmission = () => {
   const [memberData, setmemberData] = useState({
@@ -22,9 +23,9 @@ const MemberAdmission = () => {
     memberMarital: "",
     memberStudy: "",
     memberFhead: "",
-    memberfMM: "0",
-    memberfMF: "0",
-    memberfMTotal: "0",
+    memberfMM: "",
+    memberfMF: "",
+    memberfMTotal: "",
     EarningMember: "",
     FamilyMemberENO: "",
     loanamount: "",
@@ -46,11 +47,13 @@ const MemberAdmission = () => {
     });
   };
   const [showInputs, setShowInputs] = useState(false);
-  const [branchs, setBranchs] = useState([]);
-  const [centers, setCenters] = useState([]);
+
   const [submitMessage, setSubmitMessage] = useState("");
   const [memberCount, setMemberCount] = useState(0);
   const [memberID, setMemberID] = useState("");
+  const [centers, setCenters] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState("");
 
   useEffect(() => {
     if (memberCount !== undefined) {
@@ -65,54 +68,48 @@ const MemberAdmission = () => {
   };
 
   useEffect(() => {
-    const fetchCenters = async () => {
-      try {
-        const responseBranch = await fetch(
-          "https://ashalota.gandhipoka.com/branch-callback"
-        );
-        const responseCenter = await fetch(
-          "https://ashalota.gandhipoka.com/center-callback"
-        );
-
-        if (!responseBranch.ok || !responseCenter.ok) {
-          throw new Error("Failed to fetch data");
-        }
-
-        const dataBranch = await responseBranch.json();
-        const dataCenter = await responseCenter.json();
-
-        setBranchs(dataBranch);
-        setCenters(dataCenter);
-      } catch (error) {
-        console.error("Error fetching data:", error.message);
-      }
-    };
-
-    fetchCenters();
+    axios
+      .get("http://localhost:9000/branch-callback")
+      .then((response) => {
+        setBranches(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching branch data:", error);
+      });
   }, []);
+
+  const handleBranchChange = (e) => {
+    const branch = e.target.value;
+    const { name, value } = e.target;
+
+    setSelectedBranch(branch);
+
+    if (branch) {
+      axios
+        .get(
+          `http://localhost:9000/center-callback?selectedBranch=${encodeURIComponent(
+            branch
+          )}`
+        )
+        .then((response) => {
+          setCenters(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching worker data:", error);
+        });
+    }
+    if (name === "BranchMember") {
+      setSelectedBranch(value);
+      setmemberData((prevData) => ({
+        ...prevData,
+        BranchMember: value,
+      }));
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const numericValue = name === "WorkerNID" ? parseInt(value, 10) : value;
-    // const numericValue = type === "number" ? parseFloat(value) : value;
-    setmemberData((prevData) => ({
-      ...prevData,
-
-      [name]: numericValue !== checked ? numericValue : "",
-      [name]: type === "checkbox" ? checked : formattedDate,
-    }));
-
-    if (name === "FamilyMemberENO") {
-      setShowInputs(value === "yes");
-    }
-
-    if (name === "memberfMM" || name === "memberfMF") {
-      setmemberData((prevData) => ({
-        ...prevData,
-        memberfMTotal:
-          parseInt(prevData.memberfMM) + parseInt(prevData.memberfMF),
-      }));
-    }
 
     // Handle the specific fields for loanamount and nonorganizaiotnloan
     if (name === "loanamount" || name === "nonorganizaiotnloan") {
@@ -120,10 +117,37 @@ const MemberAdmission = () => {
         ...prevData,
         [name]: numericValue,
       }));
+    } else {
+      // For other fields
+      setmemberData((prevData) => ({
+        ...prevData,
+        [name]: type === "checkbox" ? checked : numericValue,
+      }));
     }
 
-    const formattedDate =
-      name === "MdateOfBirth" ? (value ? value.toISOString() : null) : value;
+    // Handle date field separately
+    if (name === "MdateOfBirth") {
+      const formattedDate = value ? value.toISOString() : null;
+      setmemberData((prevData) => ({
+        ...prevData,
+        MdateOfBirth: formattedDate,
+      }));
+    }
+
+    // Handle FamilyMemberENO and showInputs logic
+    if (name === "FamilyMemberENO") {
+      setShowInputs(value === "yes");
+    }
+
+    // Handle memberfMM and memberfMF separately
+    if (name === "memberfMM" || name === "memberfMF") {
+      setmemberData((prevData) => ({
+        ...prevData,
+        [name]: numericValue,
+        memberfMTotal:
+          parseInt(prevData.memberfMM || 0) + parseInt(prevData.memberfMF || 0),
+      }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -136,7 +160,6 @@ const MemberAdmission = () => {
       });
 
       setSubmitMessage("Successfully submitted!");
-      console.log("Response from server:", response.data);
 
       setMemberCount(memberCount + 1);
       setMemberID(generateMemberID());
@@ -156,18 +179,18 @@ const MemberAdmission = () => {
         memberMarital: "",
         memberStudy: "",
         memberFhead: "",
-        memberfMM: 0,
-        memberfMF: 0,
-        memberfMTotal: 0,
+        memberfMM: "",
+        memberfMF: "",
+        memberfMTotal: "",
         EarningMember: "",
         FamilyMemberENO: "",
-        loanamount: 0,
-        nonorganizaiotnloan: 0,
-        YearlyIncome: 0,
+        loanamount: "",
+        nonorganizaiotnloan: "",
+        YearlyIncome: "",
         LandProperty: "",
         TotalMoney: "",
-        MemberNIDnumber: 0,
-        MemberMobile: 0,
+        MemberNIDnumber: "",
+        BranchMobile: "",
         NominiName: "",
         NominiFather: "",
         MemberNominiRelation: "",
@@ -201,16 +224,18 @@ const MemberAdmission = () => {
                 <select
                   id="BranchMember"
                   className="form-select"
-                  value={memberData.BranchMember}
-                  onChange={handleChange}
+                  value={selectedBranch.BranchMember}
+                  onChange={handleBranchChange}
                   name="BranchMember"
                 >
                   <option value="">Choose...</option>
-                  {branchs.map((branch) => (
-                    <option key={branch._id} value={branch.BranchName}>
-                      {branch.BranchName}
-                    </option>
-                  ))}
+                  {Array.isArray(branches) &&
+                    branches.length > 0 &&
+                    branches.map((branch) => (
+                      <option key={branch._id} value={branch.BranchName}>
+                        {branch.BranchName}
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>
@@ -228,7 +253,7 @@ const MemberAdmission = () => {
                 >
                   <option value="">Choose...</option>
                   {centers.map((center) => (
-                    <option key={center._id} value={center.CenterName}>
+                    <option key={center.centerID} value={center.CenterName}>
                       {center.CenterName}
                     </option>
                   ))}
@@ -247,7 +272,7 @@ const MemberAdmission = () => {
                       id="memberID"
                       className="form-control"
                       value={memberID}
-                      readOnly
+                      disabled
                     />
                   </div>
                 </div>

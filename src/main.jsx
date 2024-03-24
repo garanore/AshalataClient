@@ -7,8 +7,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import MemberAdmission from "./component/page/member/MemberAdmission";
 import Home from "./component/page/home/Home";
-import WorkerAdmission from "./component/page/worker/WorkerAdmission";
-import WorkerDetails from "./component/page/worker/WorkerDetails.jsx";
+import WorkerAdmission from "./component/page/office/OfficeWorkerAdd.jsx";
+import WorkerDetails from "./component/page/office/WorkerDetails.jsx";
 import OpenCenter from "./component/page/center/OpendCenter.jsx";
 import CenterList from "./component/page/center/CenterList.jsx";
 import MemberListCenter from "./component/page/center/MemberListCenter.jsx";
@@ -22,7 +22,7 @@ import OpenSavings from "./component/page/saving/OpenSavings.jsx";
 import SavingsCollection from "./component/page/saving/SavingsCollection.jsx";
 import SavingsDetails from "./component/page/saving/SavingsDetails.jsx";
 import SavingsWithdraw from "./component/page/saving/SavingsWithdraw.jsx";
-import WorkerTransfer from "./component/page/worker/WorkerTransfer.jsx";
+import WorkerTransfer from "./component/page/office/WorkerTransfer.jsx";
 import InstallmentDetails from "./component/page/loan/InstallmentDetails.jsx";
 import InstallmentCollection from "./component/page/loan/InstallmentCollection.jsx";
 import CollectionList from "./component/page/saving/CollectionList.jsx";
@@ -31,9 +31,9 @@ import Signup from "./component/page/LoginSignup/Signup.jsx";
 import ForgotPassword from "./component/page/LoginSignup/ForgetPassword.jsx";
 import MemberEdit from "./component/page/member/MemberEdit.jsx";
 import BranchEditModal from "./component/page/branch/BranchEditModal.jsx";
-import WorkerEdit from "./component/page/worker/WorkerEdit.jsx";
+import WorkerEdit from "./component/page/office/WorkerEdit.jsx";
 import CenterEdit from "./component/page/center/CenterEdit.jsx";
-import OfficeWorkerAdd from "./component/page/office/OfficeWorkerAdd.jsx";
+// import OfficeWorkerAdd from "./component/page/office/OfficeWorkerAdd.jsx";
 
 const router = createBrowserRouter([
   {
@@ -49,10 +49,7 @@ const router = createBrowserRouter([
 
       // Worker Section
 
-      { path: "WorkerDetails", element: <WorkerDetails /> },
-      { path: "WorkerAdmission", element: <WorkerAdmission /> },
-      { path: "WorkerTransfer", element: <WorkerTransfer /> },
-      { path: "WorkerEdit", element: <WorkerEdit /> },
+      // { path: "WorkerAdmission", element: <WorkerAdmission /> },
 
       // Center Section
 
@@ -91,7 +88,10 @@ const router = createBrowserRouter([
       { path: "CollectionList", element: <CollectionList /> },
 
       //Office Section
-      { path: "OfficeWorkerAdd", element: <OfficeWorkerAdd /> },
+      { path: "WorkerAdmission", element: <WorkerAdmission /> },
+      { path: "WorkerDetails", element: <WorkerDetails /> },
+      { path: "WorkerTransfer", element: <WorkerTransfer /> },
+      { path: "WorkerEdit", element: <WorkerEdit /> },
       // Account Section
 
       // Auth

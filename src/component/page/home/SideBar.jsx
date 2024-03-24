@@ -53,7 +53,7 @@ const SideBar = () => {
 
                   {/* কর্মী শুরু */}
 
-                  <li className="sidebar-item">
+                  {/* <li className="sidebar-item">
                     <a
                       href="#"
                       className="sidebar-link collapsed"
@@ -85,7 +85,7 @@ const SideBar = () => {
                         </Link>
                       </li>
                     </ul>
-                  </li>
+                  </li> */}
 
                   {/* কর্মী শেষ  */}
 
@@ -281,13 +281,18 @@ const SideBar = () => {
                       data-bs-parent="#sidebar"
                     >
                       <li className="sidebar-item">
-                        <Link to="OfficeWorkerAdd" className="sidebar-link">
+                        <Link to="WorkerAdmission" className="sidebar-link">
                           অফিস কর্মী যোগ করুণ
                         </Link>
                       </li>
                       <li className="sidebar-item">
-                        <Link to="OfficeWorkerDetails" className="sidebar-link">
+                        <Link to="WorkerDetails" className="sidebar-link">
                           অফিস কর্মী বিবরণ
+                        </Link>
+                      </li>
+                      <li className="sidebar-item">
+                        <Link to="WorkerTransfer" className="sidebar-link">
+                          অফিস কর্মী ট্র্যান্সফার
                         </Link>
                       </li>
                       <li className="sidebar-item">

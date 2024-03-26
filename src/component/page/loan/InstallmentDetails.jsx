@@ -1,126 +1,105 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
 import axios from "axios";
 
 const InstallmentDetails = () => {
-  const [selectedCenter, setSelectedCenter] = useState("");
-  const [worker, setWorker] = useState("");
-  const [monthlyData, setMonthlyData] = useState([]);
-  const [weeklyData, setWeeklyData] = useState([]);
-  const [centers, setCenters] = useState([]);
+  // const [selectedCenter, setSelectedCenter] = useState("");
 
+  const [centers, setCenters] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+
+  // instant
+  const searchDate = moment(selectedDate).format("DD-MM-YY");
+  console.log("searchDate: ", searchDate);
   useEffect(() => {
-    if (selectedCenter) {
-      fetchInstallmentDetails(selectedCenter);
-    }
-  }, [selectedCenter]);
-  useEffect(() => {
-    axios
-      .get("http://localhost:9000/center-callback")
-      .then((response) => {
-        setCenters(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching center data:", error);
-      });
-  }, []);
-
-  const handleCenterChange = (e) => {
-    const center = e.target.value;
-    setSelectedCenter(center);
-
-    // Fetch member data for the selected center
-    if (center) {
+    if (selectedDate) {
+      const searchDate = moment(selectedDate).format("DD-MM-YY");
       axios
-        .get(
-          `http://localhost:9000/member-callback?selectedCenter=${encodeURIComponent(
-            center
-          )}`
-        )
-
+        .get(`http://localhost:9000/get-dates/${searchDate}`)
+        .then((response) => {
+          setCenters(response.data);
+        })
         .catch((error) => {
-          console.error("Error fetching member data:", error);
+          console.error("Error fetching center data:", error);
         });
+      setCenters("");
+    }
+  }, [selectedDate]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (selectedDate) {
+      const formattedDate = moment(selectedDate).format("DD-MM-YY");
+      console.log("Selected Date:", formattedDate);
+
+      // axios
+      //   .get(`http://localhost:9000/get-dates/${formattedDate}`)
+      //   .then((response) => {
+      //     setCenters(response.data);
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error fetching center data:", error);
+      //   });
+      // setCenters("");
+    } else {
+      console.log("Please select a date first");
     }
   };
 
-  const fetchInstallmentDetails = async (center) => {
-    try {
-      const response = await axios.get(`/installments?center=${center}`);
-      const { worker, monthlyInstallments, weeklyInstallments } = response.data;
-      setWorker(worker);
-      setMonthlyData(monthlyInstallments);
-      setWeeklyData(weeklyInstallments);
-    } catch (error) {
-      console.error("Error fetching installment details:", error);
-    }
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
   };
-
+  console.log("ABC", centers.length);
   return (
-    <div className="bg-light mt-2">
-      <h2 className="text-center mb-4 pt-4">কিস্তির তালিকা</h2>
-      <div className="row p-3">
-        <div className="col-md-3 mb-3">
-          <label htmlFor="CenterSelect" className="form-label">
-            কেন্দ্র নির্বাচন করুণ
-          </label>
-          <select
-            className="form-select"
-            id="CenterSelect"
-            onChange={handleCenterChange}
-            value={selectedCenter}
-          >
-            <option value="">Choose...</option>
-            {centers.map((center) => (
-              <option key={center._id} value={center.CenterName}>
-                {center.CenterName}
-              </option>
-            ))}
-          </select>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <h1>Bootstrap Form Date Select</h1>
+
+          <div className="mb-3">
+            <label htmlFor="date" className="form-label">
+              Select Date:
+            </label>
+            <DatePicker
+              id="date"
+              className="form-control"
+              selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="dd/MM/yyyy"
+            />
+          </div>
+          {/* <button className="btn btn-primary">Submit</button> */}
         </div>
-        <div className="col-md-3 col-3">
-          <label className="form-label">কর্মী</label>
-          <input type="text" className="form-control" value={worker} readOnly />
-        </div>
+      </form>
+      <div>
+        {centers.length > 0 ? (
+          centers.map((center, index) => (
+            <div key={index}>{center.WorkerName}</div>
+          ))
+        ) : selectedDate ? (
+          <p>No data found</p>
+        ) : (
+          <p>Please select a date</p>
+        )}
       </div>
 
-      <div className="mt-4 table-responsive p-3">
-        <div className="col-md-6 table table-hover mb-5">
-          <h3 className="text-center">মাসিক কিস্তি</h3>
-          <table className="table table-hover">
-            {/* Table headers */}
-            <tbody>
-              {monthlyData.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.memberName}</td>
-                  <td>{item.mobile}</td>
-                  <td>{item.loanType}</td>
-                  <td>{item.amount}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="col-md-6 table table-hover mt-5 p-3">
-        <h3 className="text-center">সাপ্তাহিক কিস্তি</h3>
-        <table className="table table-hover">
-          {/* Table headers */}
-          <tbody>
-            {weeklyData.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.memberName}</td>
-                <td>{item.mobile}</td>
-                <td>{item.loanType}</td>
-                <td>{item.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* <div>
+        {selectedDate ? (
+          centers.length > 0 ? (
+            centers.map((center, index) => (
+              <div key={index}>{center.WorkerName}</div>
+            ))
+          ) : (
+            <p>No data found</p>
+          )
+        ) : (
+          <p>Please select a date</p>
+        )}
+      </div> */}
     </div>
   );
 };

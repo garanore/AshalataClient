@@ -51,44 +51,6 @@ const SideBar = () => {
 
                   {/* সদস্য শেষ */}
 
-                  {/* কর্মী শুরু */}
-
-                  {/* <li className="sidebar-item">
-                    <a
-                      href="#"
-                      className="sidebar-link collapsed"
-                      data-bs-target="#worker"
-                      data-bs-toggle="collapse"
-                      aria-expanded="false"
-                    >
-                      <i className="fa-solid fa-sliders pe-2"></i>
-                      কর্মী
-                    </a>
-                    <ul
-                      id="worker"
-                      className="sidebar-dropdown list-unstyled collapse"
-                      data-bs-parent="#sidebar"
-                    >
-                      <li className="sidebar-item">
-                        <Link to="WorkerAdmission" className="sidebar-link">
-                          কর্মী যোগ করুণ
-                        </Link>
-                      </li>
-                      <li className="sidebar-item">
-                        <Link to="WorkerDetails" className="sidebar-link">
-                          কর্মীর বিবরণ
-                        </Link>
-                      </li>
-                      <li className="sidebar-item">
-                        <Link to="WorkerTransfer" className="sidebar-link">
-                          কর্মী পরিবর্তন করুণ
-                        </Link>
-                      </li>
-                    </ul>
-                  </li> */}
-
-                  {/* কর্মী শেষ  */}
-
                   {/* কেন্দ্র শুরু */}
 
                   <li className="sidebar-item">

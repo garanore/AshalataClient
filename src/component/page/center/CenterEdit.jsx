@@ -22,15 +22,17 @@ function CenterEdit() {
     const form = e.target;
     const ID = form.ID.value;
     const CenterName = form.CenterName.value;
-    const AddressCenter = form.AddressCenter.value;
+    const CenterAddress = form.CenterAddress.value;
     const CenterMnumber = form.CenterMnumber.value;
+    const CenterDay = form.CenterDay.value;
 
     setSubmitMessage("Successfully Updated!");
     const updatedData = {
       ID,
       CenterName,
-      AddressCenter,
+      CenterAddress,
       CenterMnumber,
+      CenterDay,
     };
 
     fetch(`http://localhost:9000/center-callback/${centerID}`, {
@@ -55,9 +57,15 @@ function CenterEdit() {
   };
 
   return (
-    <div className="form-row container-fluid p-2">
+    <div className="form-row bg-light container-fluid p-2">
       <form onSubmit={handleUpdateCenter}>
-        <div className="row  g-4 bg-light mt-5">
+        <div className=" ">
+          <div className=" border-bottom mb-3 ">
+            <h2 className="text-center   mb-4 pt-3">কেন্দ্র সম্পাদনা </h2>
+          </div>
+        </div>
+
+        <div className="row  g-4  mt-5">
           <div className="col-md-4">
             <label htmlFor="centerID" className="form-label">
               ID
@@ -83,14 +91,14 @@ function CenterEdit() {
             />
           </div>
           <div className="col-md-4">
-            <label htmlFor="AddressCenter" className="form-label">
+            <label htmlFor="CenterAddress" className="form-label">
               ঠিকানা
             </label>
             <input
               className="form-control"
               type="text"
-              name="AddressCenter"
-              defaultValue={allCenter.AddressCenter}
+              name="CenterAddress"
+              defaultValue={allCenter.CenterAddress}
             />
           </div>
           <div className="col-md-4">
@@ -103,6 +111,62 @@ function CenterEdit() {
               name="CenterMnumber"
               defaultValue={allCenter.CenterMnumber}
             />
+          </div>
+
+          <div className="col-md-3">
+            <label htmlFor="CenterDay" className="form-label">
+              কেন্দ্রের বার
+            </label>
+            <select
+              id="CenterDay"
+              name="CenterDay"
+              className="form-select"
+              defaultValue={allCenter.CenterDay ? allCenter.CenterDay : ""}
+            >
+              <option value="">Choose...</option>
+              <option
+                value="শনিবার"
+                selected={allCenter.CenterDay === "শনিবার"}
+              >
+                শনিবার
+              </option>
+              <option
+                value="রবিবার"
+                selected={allCenter.CenterDay === "রবিবার"}
+              >
+                রবিবার
+              </option>
+              <option
+                value="সোমবার"
+                selected={allCenter.CenterDay === "সোমবার"}
+              >
+                সোমবার
+              </option>
+              <option
+                value="মঙ্গলবার"
+                selected={allCenter.CenterDay === "মঙ্গলবার"}
+              >
+                মঙ্গলবার
+              </option>
+              <option
+                value="বুধবার"
+                selected={allCenter.CenterDay === "বুধবার"}
+              >
+                বুধবার
+              </option>
+              <option
+                value="বৃহস্পতিবার"
+                selected={allCenter.CenterDay === "বৃহস্পতিবার"}
+              >
+                বৃহস্পতিবার
+              </option>
+              <option
+                value="শুক্রবার"
+                selected={allCenter.CenterDay === "শুক্রবার"}
+              >
+                শুক্রবার
+              </option>
+            </select>
           </div>
 
           <div className="d-flex justify-content-between mt-5">

@@ -52,8 +52,6 @@ const MemberAdmission = () => {
     });
   };
 
-  // const [selectedDate, setSelectedDate] = useState(null);
-
   const handleAdmissionDateChange = (date) => {
     // Extract the date part from the selected date
     const formattedDate = date ? date.toISOString().split("T")[0] : null;

@@ -222,7 +222,7 @@ function OpenSavings() {
               type="text"
               id="OScenter"
               className="form-control"
-              value={selectedMember.CenterMember}
+              value={selectedMember.centerID}
               readOnly
             />
           </div>

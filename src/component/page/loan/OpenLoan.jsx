@@ -202,6 +202,7 @@ function OpenLoan() {
               withoutInterst: withoutInterst,
               onlyInterest: onlyInterest,
               loanType: loanTypeTranslations[loanType],
+              CenterDay: selectedMember.CenterDay,
             }),
           }
         );
@@ -417,21 +418,35 @@ function OpenLoan() {
                   readOnly
                 />
               </div>
-
-              <div className="mb-3">
-                <label htmlFor="date" className="form-label">
-                  কিস্তি শুরু
-                </label>
-                <div>
-                  <DatePicker
-                    id="date"
+              <div className="row mt-5">
+                <div className="col-3">
+                  <label htmlFor="CenterDay" className="form-label">
+                    কেন্দ্র বার
+                  </label>
+                  <input
+                    type="string"
+                    id="CenterDay"
                     className="form-control"
-                    selected={selectedDate}
-                    onChange={handleDateChange}
-                    dateFormat="dd/MM/yyyy"
-                  />
+                    readOnly
+                  ></input>
+                </div>
+
+                <div className="mb-3 col-3">
+                  <label htmlFor="date" className="form-label">
+                    কিস্তি শুরু
+                  </label>
+                  <div>
+                    <DatePicker
+                      id="date"
+                      className="form-control"
+                      selected={selectedDate}
+                      onChange={handleDateChange}
+                      dateFormat="dd/MM/yyyy"
+                    />
+                  </div>
                 </div>
               </div>
+
               <button className="btn btn-primary">Submit</button>
               {submitMessage && (
                 <div className="alert alert-success mt-3" role="alert">

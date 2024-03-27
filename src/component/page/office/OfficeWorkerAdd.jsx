@@ -452,8 +452,8 @@ const WorkerAdmission = () => {
               >
                 <option value="">Choose...</option>
                 {centers.map((center) => (
-                  <option key={center.centerID} value={center.CenterName}>
-                    {center.CenterName}
+                  <option key={center.centerID} value={center.centerID}>
+                    {center.centerID}
                   </option>
                 ))}
               </select>

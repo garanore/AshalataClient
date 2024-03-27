@@ -11,10 +11,11 @@ function OpenCenter() {
   const [formData, setFormData] = useState({
     centerID: "",
     CenterName: "",
-    AddressCenter: "",
+    CenterAddress: "",
     CenterMnumber: "",
     centerBranch: "",
     centerWorker: "",
+    CenterDay: "",
   });
   const [submitMessage, setSubmitMessage] = useState("");
 
@@ -71,7 +72,7 @@ function OpenCenter() {
     try {
       if (
         !formData.CenterName.trim() ||
-        !formData.AddressCenter.trim() ||
+        !formData.CenterAddress.trim() ||
         (typeof formData.CenterMnumber === "string" &&
           !formData.CenterMnumber.trim())
       ) {
@@ -91,10 +92,11 @@ function OpenCenter() {
       setFormData({
         centerID: "",
         CenterName: "",
-        AddressCenter: "",
+        CenterAddress: "",
         CenterMnumber: "",
         centerBranch: "",
         centerdWorker: "",
+        CenterDay: "",
       });
     } catch (error) {
       console.error("Error submitting form:", error.message);
@@ -141,16 +143,16 @@ function OpenCenter() {
               </div>
 
               <div className="mb-3 col-3 col-md-3">
-                <label htmlFor="AddressCenter" className="form-label">
+                <label htmlFor="CenterAddress" className="form-label">
                   ঠিকানা
                 </label>
                 <input
-                  id="AddressCenter"
+                  id="CenterAddress"
                   className="form-control"
                   type="text"
-                  value={formData.AddressCenter}
+                  value={formData.CenterAddress}
                   onChange={handleChange}
-                  name="AddressCenter"
+                  name="CenterAddress"
                 />
               </div>
 
@@ -214,7 +216,30 @@ function OpenCenter() {
                   </div>
                 </div>
               </div>
+
+              <div className="col-md-3">
+                <label htmlFor="CenterDay" className="form-label">
+                  কেন্দ্রের বার
+                </label>
+                <select
+                  id="CenterDay"
+                  name="CenterDay"
+                  className="form-select"
+                  value={formData.CenterDay}
+                  onChange={handleChange}
+                >
+                  <option value="">Choose...</option>
+                  <option>শনিবার</option>
+                  <option>রবিবার </option>
+                  <option>সোমবার </option>
+                  <option>মঙ্গলবার</option>
+                  <option>বুধবার</option>
+                  <option>বৃহস্পতিবার </option>
+                  <option>শুক্রবার</option>
+                </select>
+              </div>
             </div>
+
             <div className="col-12 mb-5 mt-5">
               <div className="mb-3">
                 <button

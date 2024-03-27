@@ -42,10 +42,11 @@ const MemberEdit = () => {
     const updatedData = Object.fromEntries(formData);
     setSubmitMessage("Successfully Updated!");
 
-    // Ensure AdmissionDate is included in updatedData
-    // Add updated AdmissionDate and CenterMember to the data
+    // Add updated AdmissionDate
+
     updatedData.AdmissionDate = allBrands.AdmissionDate;
-    updatedData.CenterMember = allBrands.CenterSelect;
+    // Add updated AdmissionDate
+    updatedData.CenterMember = allBrands.CenterMember;
 
     // Send updated data to server
     fetch(`http://localhost:9000/member-callback/${memberID}`, {
@@ -59,6 +60,8 @@ const MemberEdit = () => {
       .then((data) => {
         if (data.success) {
           console.log("Member Updated Successfully");
+          // Update allBrands state with the updated data from the server
+          setAllBrands(data.updatedMember);
         } else {
           console.error("Member Update Failed");
         }
@@ -80,12 +83,18 @@ const MemberEdit = () => {
 
   const handleCenterChange = (e) => {
     const selectedCenter = e.target.value;
-    setAllBrands({ ...allBrands, CenterSelect: selectedCenter });
+    setAllBrands({ ...allBrands, CenterMember: selectedCenter });
   };
   return (
-    <div className="form-row container-fluid p-2">
+    <div className="form-row bg-light container-fluid p-2">
       <form onSubmit={handleUpdateMember}>
-        <div className="row  g-4 bg-light mt-5">
+        <div className=" ">
+          <div className=" border-bottom mb-3 ">
+            <h2 className="text-center   mb-4 pt-3">সদস্য সম্পাদনা </h2>
+          </div>
+        </div>
+
+        <div className="row  g-4  mt-5">
           <div className="col-md-4">
             <label htmlFor="memberID" className="form-label">
               ID
@@ -125,7 +134,7 @@ const MemberEdit = () => {
             <select
               className="form-select"
               id="CenterMember"
-              value={allBrands.CenterSelect} // Set the value to the state
+              value={allBrands.CenterMember} // Set the value to the state
               onChange={handleCenterChange}
             >
               <option value="">Choose...</option>

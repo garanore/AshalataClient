@@ -57,9 +57,15 @@ function BranchEditModal() {
   };
 
   return (
-    <div className="form-row container-fluid p-2">
+    <div className="form-row bg-light container-fluid p-2">
       <form onSubmit={handleUpdateBranch}>
-        <div className="row  g-4 bg-light mt-5">
+        <div className=" ">
+          <div className=" border-bottom mb-3 ">
+            <h2 className="text-center   mb-4 pt-3">শাখা সম্পাদনা </h2>
+          </div>
+        </div>
+
+        <div className="row  g-4  mt-5">
           <div className="col-md-4">
             <label htmlFor="BranchID" className="form-label">
               ID

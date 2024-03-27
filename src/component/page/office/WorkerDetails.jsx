@@ -92,6 +92,7 @@ function WorkerDetails() {
                 <th>নাম</th>
                 <th>মোবাইল</th>
                 <th>কেন্দ্র</th>
+                <th>পদবি</th>
                 <th>পদক্ষেপ</th>
               </tr>
             </thead>
@@ -102,6 +103,7 @@ function WorkerDetails() {
                   <td>{worker.WorkerName}</td>
                   <td>{worker.WorkerMobile}</td>
                   <td>{worker.WorkerCenterAdd}</td>
+                  <td>{worker.Designation}</td>
                   <td>
                     <button
                       type="button"

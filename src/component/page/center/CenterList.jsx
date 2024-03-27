@@ -91,6 +91,7 @@ function CenterList() {
                 <th>ঠিকানা</th>
                 <th>সদস্য সংখ্যা</th>
                 <th>কর্মী</th>
+                <th>কেন্দ্র বার </th>
                 <th>পদক্ষেপ</th>
               </tr>
             </thead>
@@ -100,9 +101,10 @@ function CenterList() {
                   <td>{center.centerID}</td>
                   <td>{center.CenterName}</td>
                   <td>{center.CenterMnumber}</td>
-                  <td>{center.AddressCenter}</td>
+                  <td>{center.CenterAddress}</td>
                   <td>{center.selectedWorker}</td>
                   <td>{center.selectedWorker}</td>
+                  <td>{center.CenterDay}</td>
                   <td>
                     <button
                       type="button"
@@ -184,7 +186,7 @@ function CenterList() {
                   <div className="col-md-6">
                     <input
                       className="form-control"
-                      value={selectedCenter.AddressCenter}
+                      value={selectedCenter.CenterAddress}
                       readOnly
                     ></input>
                   </div>

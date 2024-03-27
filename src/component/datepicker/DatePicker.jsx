@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const DatePicker = ({ selectedDate, onDateChange }) => {
+const DatePickers = ({ selectedDate, onDateChange }) => {
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
     // Parse the selected date and format it to "yyyy-MM-dd"
@@ -30,9 +30,9 @@ const DatePicker = ({ selectedDate, onDateChange }) => {
   );
 };
 
-DatePicker.propTypes = {
+DatePickers.propTypes = {
   selectedDate: PropTypes.string.isRequired,
   onDateChange: PropTypes.func.isRequired,
 };
 
-export default DatePicker;
+export default DatePickers;

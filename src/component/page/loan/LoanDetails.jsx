@@ -77,8 +77,8 @@ function LoanDetails() {
           >
             <option value="">Choose...</option>
             {centers.map((center) => (
-              <option key={center._id} value={center.CenterName}>
-                {center.CenterName}
+              <option key={center._id} value={center.centerID}>
+                {center.centerID}
               </option>
             ))}
           </select>

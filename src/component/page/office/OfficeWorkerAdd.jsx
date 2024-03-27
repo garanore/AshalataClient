@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect, useRef } from "react";
-import DatePicker from "../../datepicker/DatePicker";
+
 import axios from "axios";
+import DatePickers from "./../../datepicker/DatePicker";
 const API_URL = "http://localhost:9000/workeradmission";
 
 const WorkerAdmission = () => {
@@ -210,7 +211,7 @@ const WorkerAdmission = () => {
 
             <div className="col-4">
               <div className="col-4">
-                <DatePicker
+                <DatePickers
                   selectedDate={WorkerData.WdateOfBirth}
                   onDateChange={handleDateChange}
                 />

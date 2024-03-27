@@ -9,10 +9,11 @@ const InstallmentDetails = () => {
   const [centers, setCenters] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedCenter, setSelectedCenter] = useState("");
-  const [centerMember, setCenterMember] = useState([]);
+  const [filteredCenters, setFilteredCenters] = useState([]);
+
+  // For Center Fetching----------------------------------------------------------------
 
   useEffect(() => {
-    // Fetch centers
     axios
       .get("http://localhost:9000/center-callback")
       .then((response) => {
@@ -23,37 +24,52 @@ const InstallmentDetails = () => {
       });
   }, []);
 
+  // for date fetching-----------------------------------------------------------------
+
   useEffect(() => {
-    // Fetch data based on selected center and date
-    if (selectedCenter && selectedDate) {
-      const searchDate = moment(selectedDate).format("DD-MM-YY"); // Format selectedDate as "DD-MM-YY"
+    if (selectedDate) {
+      const searchDate = moment(selectedDate).format("DD-MM-YY");
       axios
-        .get(`http://localhost:9000/get-installmentDate/${selectedCenter}`)
+        .get(`http://localhost:9000/get-dates/${searchDate}`)
         .then((response) => {
-          const filteredData = response.data.filter((item) =>
-            item.nextDates.includes(searchDate)
-          );
-          setCenterMember(filteredData);
+          setFilteredCenters(response.data); // Set filteredCenters for table data
         })
         .catch((error) => {
           console.error("Error fetching center data:", error);
         });
     } else {
-      setCenterMember([]);
+      setFilteredCenters([]); // Clear filteredCenters if no date is selected
     }
-  }, [selectedCenter, selectedDate]);
+  }, [selectedDate]);
+
+  // For Center Change-------------------------------------
 
   const handleCenterChange = (e) => {
-    setSelectedCenter(e.target.value);
+    const selectedCenter = e.target.value;
+    setSelectedCenter(selectedCenter);
   };
+
+  console.log("ABC", centers);
+  // for date change-----------------------------------------------------
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (selectedDate) {
+      const formattedDate = moment(selectedDate).format("DD-MM-YY");
+      console.log("Selected Date:", formattedDate);
+    } else {
+      console.log("Please select a date first");
+    }
+  };
+
   return (
     <div className="bg-light container-fluid">
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <div className="row mb-5">
             <h2 className="text-center mb-4 pt-4">কিস্তির তালিকা</h2>
@@ -70,8 +86,8 @@ const InstallmentDetails = () => {
             >
               <option value="">Choose...</option>
               {centers.map((center) => (
-                <option key={center._id} value={center.centerID}>
-                  {center.centerID}
+                <option key={center._id} value={center.CenterName}>
+                  {center.CenterName}
                 </option>
               ))}
             </select>
@@ -92,7 +108,7 @@ const InstallmentDetails = () => {
           </div>
         </div>
         <div className="table-responsive">
-          {centerMember.length > 0 ? (
+          {filteredCenters.length > 0 ? (
             <table className="table table-hover">
               <thead>
                 <tr>
@@ -108,7 +124,7 @@ const InstallmentDetails = () => {
                 </tr>
               </thead>
               <tbody>
-                {centerMember.map((center, index) => (
+                {filteredCenters.map((center, index) => (
                   <tr key={index}>
                     <td>{center.loanID}</td>
                     <td>{center.memberID}</td>
@@ -123,9 +139,11 @@ const InstallmentDetails = () => {
                 ))}
               </tbody>
             </table>
-          ) : selectedCenter && selectedDate ? (
-            <p> কেন্দ্র এবং তারিখ অনুযায়ী কোন কিস্তি নেই </p>
-          ) : null}
+          ) : selectedDate ? (
+            <p>No data found</p>
+          ) : (
+            <p>Please select a date</p>
+          )}
         </div>
       </form>
     </div>
@@ -133,4 +151,3 @@ const InstallmentDetails = () => {
 };
 
 export default InstallmentDetails;
-``;

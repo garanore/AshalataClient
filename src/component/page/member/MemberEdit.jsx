@@ -3,58 +3,51 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 const MEMBER_LIST_CENTER_ROUTE = "/MemberListCenter";
 
 const MemberEdit = () => {
   const location = useLocation();
   const memberID = location.state ? location.state.memberID : null;
   const navigate = useNavigate();
-  const [allBrands, setAllBrands] = useState([]);
+  const [allBrands, setAllBrands] = useState({});
   const [submitMessage, setSubmitMessage] = useState("");
+  const [centers, setCenters] = useState([]);
 
   useEffect(() => {
+    // Fetch member data
     fetch(`http://localhost:9000/member-callback/${memberID}`)
       .then((res) => res.json())
-      .then((data) => setAllBrands(data));
+      .then((data) => setAllBrands(data))
+      .catch((error) => console.error("Error fetching member data:", error));
+
+    // Fetch centers
+    axios
+      .get("http://localhost:9000/center-callback")
+      .then((response) => {
+        setCenters(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching center data:", error);
+      });
   }, [memberID]);
 
   const handleUpdateMember = (e) => {
     e.preventDefault();
     const form = e.target;
-    const ID = form.ID.value;
-    const memberName = form.memberName.value;
-    const MfhName = form.MfhName.value;
-    const memberJob = form.memberJob.value;
-    const memberVillage = form.memberVillage.value;
-    const memberUnion = form.memberUnion.value;
-    const memberPost = form.memberPost.value;
-    const memberSubDic = form.memberSubDic.value;
-    const memberDic = form.memberDic.value;
-    const memberFhead = form.memberFhead.value;
-    const MemberNIDnumber = form.MemberNIDnumber.value;
-    const MemberMobile = form.MemberMobile.value;
-    const NominiName = form.NominiName.value;
-    const NominiFather = form.NominiFather.value;
-    const MemberNominiRelation = form.MemberNominiRelation.value;
+    const formData = new FormData(form);
+    const updatedData = Object.fromEntries(formData);
     setSubmitMessage("Successfully Updated!");
-    const updatedData = {
-      ID,
-      memberName,
-      MfhName,
-      memberJob,
-      memberVillage,
-      memberUnion,
-      memberPost,
-      memberSubDic,
-      memberDic,
-      memberFhead,
-      MemberNIDnumber,
-      MemberMobile,
-      NominiName,
-      NominiFather,
-      MemberNominiRelation,
-    };
 
+    // Ensure AdmissionDate is included in updatedData
+    // Add updated AdmissionDate and CenterMember to the data
+    updatedData.AdmissionDate = allBrands.AdmissionDate;
+    updatedData.CenterMember = allBrands.CenterSelect;
+
+    // Send updated data to server
     fetch(`http://localhost:9000/member-callback/${memberID}`, {
       method: "PUT",
       headers: {
@@ -69,6 +62,9 @@ const MemberEdit = () => {
         } else {
           console.error("Member Update Failed");
         }
+      })
+      .catch((error) => {
+        console.error("Error updating member:", error);
       });
   };
 
@@ -76,6 +72,16 @@ const MemberEdit = () => {
     navigate(MEMBER_LIST_CENTER_ROUTE);
   };
 
+  const handleAdmissionDateChange = (date) => {
+    // Format the date before updating the state
+    const formattedDate = date.toISOString(); // Assuming ISO format
+    setAllBrands({ ...allBrands, AdmissionDate: formattedDate });
+  };
+
+  const handleCenterChange = (e) => {
+    const selectedCenter = e.target.value;
+    setAllBrands({ ...allBrands, CenterSelect: selectedCenter });
+  };
   return (
     <div className="form-row container-fluid p-2">
       <form onSubmit={handleUpdateMember}>
@@ -91,6 +97,44 @@ const MemberEdit = () => {
               defaultValue={allBrands.memberID}
               readOnly
             />
+          </div>
+
+          <div className="mb-3 col-3">
+            <label htmlFor="AdmissionDate" className="form-label">
+              ভর্তি তারিখ
+            </label>
+            <div>
+              <DatePicker
+                id="AdmissionDate"
+                className="form-control"
+                selected={
+                  allBrands.AdmissionDate
+                    ? new Date(allBrands.AdmissionDate)
+                    : null
+                }
+                onChange={handleAdmissionDateChange}
+                dateFormat="dd/MM/yyyy"
+              />
+            </div>
+          </div>
+
+          <div className="col-md-3 mb-3">
+            <label htmlFor="CenterMember" className="form-label">
+              কেন্দ্র নির্বাচন করুণ
+            </label>
+            <select
+              className="form-select"
+              id="CenterMember"
+              value={allBrands.CenterSelect} // Set the value to the state
+              onChange={handleCenterChange}
+            >
+              <option value="">Choose...</option>
+              {centers.map((center) => (
+                <option key={center._id} value={center.centerID}>
+                  {center.centerID}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="col-md-4">

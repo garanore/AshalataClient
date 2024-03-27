@@ -1,7 +1,10 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from "react";
-import DatePicker from "../../datepicker/DatePicker";
+import DatePickers from "../../datepicker/DatePicker";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
 
 import axios from "axios";
 const API_URL = "http://localhost:9000/memberdmission";
@@ -11,6 +14,7 @@ const MemberAdmission = () => {
     BranchMember: "",
     CenterMember: "",
     memberID: "",
+    AdmissionDate: null,
     memberName: "",
     MfhName: "",
     MdateOfBirth: "",
@@ -40,12 +44,26 @@ const MemberAdmission = () => {
     MemberNominiRelation: "",
     agreementChecked: false,
   });
+
   const handleDateChange = (date) => {
     setmemberData({
       ...memberData,
       MdateOfBirth: date,
     });
   };
+
+  // const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleAdmissionDateChange = (date) => {
+    // Extract the date part from the selected date
+    const formattedDate = date ? date.toISOString().split("T")[0] : null;
+    // Update the AdmissionDate field with the formatted date
+    setmemberData({
+      ...memberData,
+      AdmissionDate: formattedDate,
+    });
+  };
+
   const [showInputs, setShowInputs] = useState(false);
 
   const [submitMessage, setSubmitMessage] = useState("");
@@ -167,6 +185,7 @@ const MemberAdmission = () => {
         BranchMember: "",
         CenterMember: "",
         memberID: "",
+        AdmissionDate: "",
         memberName: "",
         MfhName: "",
         memberJob: "",
@@ -216,7 +235,7 @@ const MemberAdmission = () => {
       <form className="container-fluid p-2">
         <div className="row  g-4 bg-light">
           <div className="row mt-5 p-4">
-            <div className="col-4">
+            <div className="col-3">
               <div className="col-md-6">
                 <label htmlFor="BranchMember" className="form-label">
                   শাঁখা নির্বাচন করুণ
@@ -239,7 +258,7 @@ const MemberAdmission = () => {
                 </select>
               </div>
             </div>
-            <div className="col-4">
+            <div className="col-3">
               <div className="col-md-6">
                 <label htmlFor="CenterMember" className="form-label">
                   কেন্দ্র নির্বাচন করুণ
@@ -253,14 +272,14 @@ const MemberAdmission = () => {
                 >
                   <option value="">Choose...</option>
                   {centers.map((center) => (
-                    <option key={center.centerID} value={center.CenterName}>
-                      {center.CenterName}
+                    <option key={center.centerID} value={center.centerID}>
+                      {center.centerID}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-            <div className="col-4">
+            <div className="col-3">
               <div className="row g-3 align-items-center ">
                 <div>
                   <div className="mb-3">
@@ -276,6 +295,25 @@ const MemberAdmission = () => {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="mb-3 col-3">
+              <label htmlFor="AdmissionDate" className="form-label">
+                ভর্তি তারিখ
+              </label>
+
+              <div>
+                <DatePicker
+                  id="AdmissionDate"
+                  className="form-control"
+                  selected={
+                    memberData.AdmissionDate
+                      ? new Date(memberData.AdmissionDate)
+                      : null
+                  }
+                  onChange={handleAdmissionDateChange}
+                  dateFormat="dd/MM/yyyy"
+                />
               </div>
             </div>
           </div>
@@ -313,7 +351,7 @@ const MemberAdmission = () => {
           </div>
           <div className="col-4">
             <div className="col-4">
-              <DatePicker
+              <DatePickers
                 selectedDate={memberData.MdateOfBirth}
                 onDateChange={handleDateChange}
               />
